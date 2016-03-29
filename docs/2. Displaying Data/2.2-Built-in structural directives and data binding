@@ -1,0 +1,292 @@
+# Built-in Structural Directives and Data Binding
+In this section, we will create a list of projects and by implementing that, we will understand below angular 2 concepts:
+- built-in structural directives 
+- data and event binding
+- component lifecycle hook
+
+So, Let's start creating Projects List Component step-by-step.
+
+## Step 1 Write Minimal Projects List Component
+Let's write minimal component code that we know till now for projects list component.
+
+**app/projects/projects-list.component.ts**
+
+```typescript
+import {Component} from 'angular2/core';
+
+@Component({
+    selector: 'projects-list',
+    templateUrl: 'app/projects/projects-list.component.html'
+})
+export class ProjectListComponent{
+}
+```
+
+**app/projects/projects-list.component.html**
+```html
+<div class="projects-list">
+</div>
+```
+
+### Step 2 Load Projects Dummy Data
+To display project's list, we need to first load the project data. For now, we will hard-code the dummy data in our component class. In future, we will remove this code from here.
+
+So let's load the dummy data.
+
+**app/projects/projects-list.component.ts**
+```typescript
+...
+export class ProjectListComponent{
+    projects: any[] = [];
+    constructor(){
+        this.loadProjects();    
+    }
+    
+    loadProjects(){
+         this.projects = [
+         {
+            id: 1,
+            name: 'Project 1',
+            client: {
+                id: 1,
+                name: 'Client 1',
+                timezon: 'PST',
+                country: 'USA',
+                email: 'client1@domain.com'
+            },
+            details: 'Project 1 Description',
+            isCompleted: false,
+            startDate: 1451606400000,
+            endDate: 1456770600000, 
+            employees: [
+                {
+                    id: 1, 
+                    name: 'Employee 1', 
+                    role: 'FrontEnd Developer', 
+                    email: 'emp1@domain.com'
+                },
+                {
+                    id: 2, 
+                    name: 'Employee 2', 
+                    role: 'BackEnd Developer', 
+                    email: 'emp2@domain.com'
+                },
+                {
+                    id: 3, 
+                    name: 'Employee 3', 
+                    role: 'Tester', 
+                    email: 'emp3@domain.com'
+                },
+                {
+                    id: 4, 
+                    name: 'Employee 4', 
+                    role: 'Project Manager', 
+                    email: 'emp4@domain.com'
+                }
+            ]
+        },{
+            id: 2,
+            name: 'Project 2',
+            client: {
+                id: 2,
+                name: 'Client 2',
+                timezon: 'IST',
+                country: 'India',
+                email: 'client2@domain.com'
+            },
+            details: 'Project 2 Description',
+            isCompleted: true,
+            startDate: 1433097000000,
+            endDate: 1436898600000, 
+            employees: [
+                {
+                    id: 4, 
+                    name: 'Employee 4', 
+                    role: 'Project Manager',
+                    email: 'emp4@domain.com'
+                },
+                {
+                    id: 5, 
+                    name: 'Employee 5', 
+                    role: 'FullStack Developer', 
+                    email: 'emp5@domain.com'
+                }
+            ]
+        }];
+    }
+}
+```
+Whenever angular creates an instance of this component, its constructor will be called, and from there we are calling method to load the project's data. 
+
+At `projects:any[]`, `any` is a type annotation for typescript. We are here specifying that projects is an array of any data type.
+
+## Step 3: Display Project List In Template
+Let's display the list of projects in the component's template.
+
+**app/projects/projects-list.component.html**
+
+```html
+<div class="projects-list mdl-list">
+    <div class="mdl-list__item" *ngFor="#project of projects">
+            <span class="mdl-list__item-primary-content">
+                {{project.name}}
+            </span>
+    </div>
+</div>
+```
+
+There are many new things to learn in above code. Let's start understanding it.
+
+### Built-in Structural Directives
+Structural directives changes DOM layout by adding or removing DOM elements. Angular 2 provides three built-in structural directives:
+
+1. *ngFor
+2. *ngIf
+3. [ngSwitch] and *ngSwitchWhen, *ngSwitchDefault
+
+Structural directives are specified by prefixing '*' against it. Don't worry about this strange syntax, this is a valid HTML syntax.
+
+For now, we will understand only `*ngFor`. We will understand the other two directives in next steps of this section.
+
+#### *ngFor
+`*ngFor` directive is used to repeat the the template specified within it. It will iterate over the list specified (in our case `projects`) and for each item of the list, it will render the template.
+
+Here, `#project of projects` means, take each item of projects list, assign it to local template variable named `project` and make it available to the template being repeated. We will see more use of local template variable in future steps.
+
+### Data Binding
+Angular 2 provides four ways of data binding:
+1. One-way data binding `{{}}` - Binding from component to dom
+2. Property/Attribute/Class/Style binding `[prop/attr./class./style.]` - Binding from component to dom
+3. Event binding `(eventName)` - Binding from dom to component
+4. Two-way data binding `[{}]` - Two way binding between dom and component
+
+For now, we will understand One-way data binding and we will understand class and event binding in next steps of this section. Two-way data binding, style binding, attribute binding and property binding will be covered in future chapters.
+
+#### One-way data binding
+`{{}}` syntax is used to specify one-way data binding. That means whenever the data is changed in component class, it will be changed in template also.
+
+So, in code `{{project.name}}`, whenever project name is changed in component class, it will be changed in template also.
+
+## Step 4 Show Project Completion Status Icon
+Now, we want to show a checkmark icon against the projects which are completed and unchecked icon against projects which are still active. Let's add the code to implement this in our template.
+
+**app/projects/projects-list.component.html**
+```html
+...
+<span class="mdl-list__item-primary-content">
+    <i *ngIf="project.isCompleted" class="material-icons mdl-list__item-icon">check_circle</i>
+    <i *ngIf="!project.isCompleted" class="material-icons mdl-list__item-icon">radio_button_unchecked</i>
+    {{project.name}}
+</span>
+...
+```
+
+In above code, there is one thing that we need to understand and that is `*ngIf` directive.
+
+### *ngIf and [ngSwitch] Structural Directives
+I have already explained what is structural directive in above step. So now we will understand `*ngIf` and `ngSwitch` directives.
+
+#### `*ngIf` 
+`*ngIf` directive is used to add or remove DOM element dynamically based on some condition.
+
+So in above code `*ngIf="project.isCompleted"`, whenever the project's status is completed, it will show checkmark icon and unchecked icon otherwise.
+
+#### `ngSwitch`
+Rather than writing toggling condition on two elements, we can use `ngSwitch` directive as shown below:
+
+```html
+ <i [ngSwitch]="project.isCompleted" class="material-icons mdl-list__item-icon">
+    <span *ngSwitchWhen="true">check_circle</span>
+    <span *ngSwitchWhen="false">radio_button_unchecked</span>
+</i>
+```
+`ngSwitch` directive is used when we have many possibilities and all that possibilities are dependent on one expression.  So in above code, based on project's isCompleted value, either of the `span` elements will be added to the DOM. 
+
+`ngSwitch` directive works with collaboration of `*ngSwitchWhen` and `*ngSwitchDefault` directives.
+
+## Step 5 Adding Functionality To Select Project 
+In future, we need to show project's detail besides project's list. So for that we need to maintain which project is selected in our component class.
+
+Let's bind click event on the list items and add `selected` class to the selected project element.
+
+**app/projects/projects-list.component.html**
+```
+...
+<div class="mdl-list__item" *ngFor="#project of projects" 
+        (click)="selectProject(project)"
+        [class.selected]="project.id == selectedProject.id">
+   ...     
+</div>
+...
+```
+
+Now, define this click handler in our component class.
+
+**app/projects/projects-list.component.ts**
+```typescript
+...
+export class ProjectListComponent{
+    ...
+    selectedProject: any = null;
+
+    selectProject(selectedProject){
+        this.selectedProject = selectedProject;
+    }
+    ...
+}
+```
+
+Two new things to learn in above code:
+### Event binding
+We can bind any valid DOM event to the element using `()` syntax. As for now we want to bind click event, we have written `(click)="selectProject(project)"`.
+
+Here on the right side of the event binding is a template statement. Template statements are javascript statements with some restriction. They are evaluated in component's scope. You can check more about this at [here](https://angular.io/docs/ts/latest/guide/template-syntax.html#!#template-statements)
+
+So in above code, on click of the element, `selectProject` method will be called with the argument as the `project` object.
+
+### Class Binding
+We can add/remove one class on the element using class binding in angular 2. Class binding toggles the class by evaluating the template  expression that we assign to it. In above code `[class.selected]="project.id == selectedProject.id"`,  `selected` class will be added to the element if the template expression, which is `project.id == selectedProject.id`, evaluates to true.
+
+If we want to add/remove multiple classes on the element, it will be good to use [ngClass](https://angular.io/docs/ts/latest/guide/template-syntax.html#!#ngClass) directive.
+
+## Step 6 Component Lifecycle Hook
+In step 2, we wrote the method call to load the projects inside component's constructor. But, writing any application logic inside constructor is not a good way, as in future we may want to extend this class or reuse it in some way. So when should we call the method to load the projects? Well, angular 2 provides provision of many component lifecycle hooks which we can implement as per our need. We will use one of them here to solve our purpose.
+
+Lifecycle Hooks for Component/Directives are executed in below sequence:
+- ngOnChanges
+- ngOnInit
+- ngDoCheck
+- ngAfterContentInit
+- ngAfterContentChecked
+- ngAfterViewInit
+- ngAfterViewChecked
+- ngOnDestroy
+
+You can get more information of lifecycle hooks [here](https://angular.io/docs/ts/latest/guide/lifecycle-hooks.html).
+
+For now, we will use `ngOnInit` lifecycle hook. `ngOnInit` hook is called once the component's input properties are initialized. We will understand input properties in next chapter.
+
+So let's update our component's class code to use ngOnInit hook
+**app/projects/projects-list.component.ts**
+
+```typescript
+import {Component, OnInit} from 'angular2/core';
+...
+export class ProjectListComponent implements OnInit{
+    constructor() {}
+    
+    loadProjects(){
+        ...
+    }
+    ngOnInit(){
+        this.loadProjects();
+    }
+}
+```
+Here, we first imported `OnInit` interface. You may have question, why to use interface?. Though, it is totally optional to use it, it is good to use it for static code analysis for large projects. 
+
+Note that, we moved the method call to load projects to `ngOnInit` method, which will be called by angular framework once the component is instantiated and its input properties are initialized. (Though in this component we don't have any input property, we will follow this standard to write component startup code in ngOnInt method instead in constructor in this tutorial)
+
+Finally, we have created a component which loads project list, displays it along with its completion status icons and provides functionality to maintain project selection.
+
+In next section, we will use this component in a container component.

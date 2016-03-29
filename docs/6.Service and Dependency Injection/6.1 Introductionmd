@@ -1,0 +1,22 @@
+# Introduction
+In this chapter, there won't be any visual or functionality change in our Project Management App. Instead we are going to do changes to make our application more manageable and scalable. In this chapter we will understand below angular 2 concepts:
+- What is service and how to use it
+- Dependency Injection in angular 2
+- Built-in service: Http
+
+## Code Difference From Previous Chapter
+For reference, you can check what all code changes we are going to do in this chapter from [here](https://github.com/shripalsoni04/angular2-tutorial-app/compare/step-5...step-6).
+
+If you haven't written all the code shown in previous chapters or have stuck somewhere, checkout code till now by executing below command.
+```
+git checkout step-5
+```
+
+## Introduction To Service And Dependency Injection
+Service is basically a simple class, which contains business/application logic that we may want to share among the components. How to share it among the components, is the job of dependency injection framework.
+
+Dependency injection is a software design pattern, which implements inversion of control for resolving dependencies. In terms of dependency injection pattern, we can consider service as a dependency and injection is how we pass this dependency (service) to the dependent object(component/directive/service in our case).
+
+Angular has its own dependency injection framework, which can be used by any other application or framework. 
+
+It will be more clear to you when we start using it. So let's start using it in coming sections.
